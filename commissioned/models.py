@@ -8,7 +8,7 @@ class Commissioned(db.Model):
     
     id = db.Column('codigo', db.String, primary_key=True)
     classification = db.Column('classe', db.String, nullable=False)
-    level = db.Column('nivel', db.String, nullable=False)
+    level = db.Column('nivel', db.String)
     name = db.Column('nome', db.String, nullable=False)
 
     quantity = db.Column('quantidade', db.SmallInteger, nullable=False)

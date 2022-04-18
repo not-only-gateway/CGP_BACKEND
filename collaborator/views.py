@@ -13,6 +13,19 @@ from marital.models import MaritalStatus
 from collaborator.models import Collaborator
 from unit.models import Unit
 
+
+def load_image(data):
+    try:
+        if data is None:
+            raise ValueError
+        f = open(data, "r")
+        d = f.read()
+        f.close()
+        return d
+    except (ValueError, OSError):
+        return data
+
+
 api = ApiView(
     class_instance=Collaborator,
     identifier_attr='id',
@@ -24,6 +37,7 @@ api = ApiView(
         {'key': 'linkage', 'instance': Linkage},
         {'key': 'instruction', 'instance': Instruction}
     ],
+    on_key_parse=[{'key': 'image', 'loader': load_image}],
     db=db,
     on_before_call=authorize
 )
@@ -36,7 +50,7 @@ def collaborator(e_id=None):
     elif request.method == 'POST':
         return api.post(package=request.json)
     elif request.method == 'PUT':
-        return api.put(entity_id=e_id, package=request.json)
+        return api.put(entity_id=e_id, package=request.json, use_self_update=True)
     elif request.method == 'DELETE':
         return api.delete(entity_id=e_id)
 

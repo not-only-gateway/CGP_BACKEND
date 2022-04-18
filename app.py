@@ -3,18 +3,20 @@ from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 import requests
 import env
-
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
+app.config['MEDIA'] = 'media/'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config[
     'SQLALCHEMY_DATABASE_URI'] = env.DATABASE + '://' + env.USER + ':' + env.PASSWORD + '@' + env.HOST_NAME + '/' + env.DATABASE_NAME
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 
 def authorize(method):
     token = request.headers.get('authorization', None)
+
     if token is not None:
         request_res = requests.get(
             env.AUTH_ENDPOINT,

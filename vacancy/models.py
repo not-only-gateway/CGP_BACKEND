@@ -8,10 +8,10 @@ class Vacancy(db.Model):
 
     id = db.Column('codigo', db.String, primary_key=True)
 
-    commissioned = db.Column('ccomiss', db.String, db.ForeignKey('cgp_ccomiss.codigo', ondelete='NO ACTION'), nullable=False)
-    unit = db.Column('unidade', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='NO ACTION'))
-    holder = db.Column('titular', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='NO ACTION'))
-    substitute = db.Column('substituto', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='NO ACTION'))
+    commissioned = db.Column('ccomiss', db.String, db.ForeignKey('cgp_ccomiss.codigo', ondelete='CASCADE'), nullable=False)
+    unit = db.Column('unidade', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='SET NULL'))
+    holder = db.Column('titular', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='SET NULL'))
+    substitute = db.Column('substituto', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='SET NULL'))
 
 
     nomef =  db.Column('nomef', db.String, nullable=False)

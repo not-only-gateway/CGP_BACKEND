@@ -37,6 +37,4 @@ def vacancy(e_id=None):
 
 @app.route('/api/list/vacancy', methods=['GET'])
 def list_vacancy():
-    response = api.list(request.args)
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    return api.list(request.args)

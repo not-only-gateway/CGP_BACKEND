@@ -7,9 +7,9 @@ class Unit(db.Model):
     __tablename__ = 'cgp_unidade'
 
     acronym = db.Column('sigla', db.String, primary_key=True, nullable=False)
-    name = db.Column('nome', db.String, nullable=False, unique=True)
-    parent_unit = db.Column('subordinacao', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='NO ACTION'))
-    root = db.Column('raiz', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='NO ACTION'), nullable=False)
+    name = db.Column('nome', db.String, nullable=False)
+    parent_unit = db.Column('subordinacao', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='CASCADE'))
+    root = db.Column('raiz', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='CASCADE'), nullable=False)
 
     def update(self, data):
         try:
