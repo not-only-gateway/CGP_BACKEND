@@ -32,6 +32,7 @@ class Collaborator(db.Model):
     instruction = db.Column('instruc', db.String, db.ForeignKey('cgp_instruc.codigo', ondelete='SET NULL'))
     cpf = db.Column('cpf', db.String)
     image = db.Column('image', db.String)
+    active = db.Column('active', db.Boolean, default=False)
 
     def update(self, data):
         try:
