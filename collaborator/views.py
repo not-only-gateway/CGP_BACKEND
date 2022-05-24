@@ -39,8 +39,10 @@ api = ApiView(
     ],
     on_key_parse=[{'key': 'image', 'loader': load_image}],
     db=db,
-    on_before_call=authorize
+    on_before_call=authorize,
+    keys_to_delete=['image']
 )
+
 
 @app.route('/api/collaborator/<e_id>', methods=['GET', 'PUT', 'DELETE'])
 @app.route('/api/collaborator', methods=['POST'])
@@ -55,10 +57,13 @@ def collaborator(e_id=None):
         return api.delete(entity_id=e_id)
 
 
+@app.route('/api/collaborator/<e_id>/image', methods=['GET'])
+def img_collaborator(e_id=None):
+    collab = Collaborator.query.get(e_id)
+    if collab is not None:
+        return jsonify({"data": collab.image}), 200
+    return jsonify({'status': 'error', 'description': 'not_found', 'code': 404}), 404
 
 @app.route('/api/list/collaborator', methods=['GET'])
 def list_collaborator():
     return api.list(request.args)
-
-
-
