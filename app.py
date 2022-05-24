@@ -34,6 +34,7 @@ def authorize(method):
 
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+from relationships.models import Relationship
 from vacancy.models import Vacancy
 from marital.models import MaritalStatus
 from unit.models import Unit

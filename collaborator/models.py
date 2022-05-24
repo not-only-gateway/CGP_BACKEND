@@ -10,7 +10,6 @@ class Collaborator(db.Model):
 
     id = db.Column('codigo', db.String, primary_key=True)
 
-    image = db.Column('imagem_caminho', db.String)
     registration = db.Column('matricula', db.String)
     name = db.Column('nome', db.String, nullable=False)
     superior = db.Column('superior', db.String)
@@ -31,32 +30,13 @@ class Collaborator(db.Model):
     unit = db.Column('unidade', db.String, db.ForeignKey('cgp_unidade.sigla', ondelete='SET NULL'))
     marital_status = db.Column('estcivil', db.String, db.ForeignKey('cgp_estcivil.codigo', ondelete='SET NULL'))
     instruction = db.Column('instruc', db.String, db.ForeignKey('cgp_instruc.codigo', ondelete='SET NULL'))
-    solides_id = db.Column('solides_id', db.BigInteger)
-
+    cpf = db.Column('cpf', db.String)
+    image = db.Column('image', db.String)
 
     def update(self, data):
         try:
             for key in data.keys():
-                if key == 'image':
-                    if self.image is not None:
-                        try:
-                            os.remove(self.image)
-                        except OSError:
-                            pass
-
-                    if data[key] is not None and len(data[key]) > 0:
-                        try:
-                            path = app.config.get('MEDIA', '') + str(uuid.uuid4()) + '.txt'
-                            print(path, len(str(data[key])))
-                            f = open(path, "a")
-                            f.write(str(data[key]))
-                            f.close()
-                            setattr(self, key, path)
-                        except Exception as e:
-                            print(e)
-                    else:
-                        setattr(self, key, None)
-                elif hasattr(self, key):
+                if hasattr(self, key):
                     setattr(self, key, data.get(key, None))
             db.session.commit()
         except SQLAlchemyError:
@@ -64,13 +44,7 @@ class Collaborator(db.Model):
 
     def __init__(self, data):
         for key in data.keys():
-            if key == 'image':
-                path = app.config.get('MEDIA', '') + str(uuid.uuid4()) + '.txt'
-                f = open(path, "a")
-                f.write(data.get(key, ''))
-                f.close()
-                setattr(self, key, path)
-            elif hasattr(self, key):
+            if hasattr(self, key):
                 setattr(self, key, data.get(key, None))
         db.session.add(self)
         db.session.commit()
