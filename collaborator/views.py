@@ -26,6 +26,7 @@ def load_image(data):
         return data
 
 
+URL = 'http://192.168.1.188:443/api/collaborator/'
 api = ApiView(
     class_instance=Collaborator,
     identifier_attr='id',
@@ -40,7 +41,7 @@ api = ApiView(
     on_key_parse=[{'key': 'image', 'loader': load_image}],
     db=db,
     on_before_call=authorize,
-    keys_to_delete=['image']
+    keys_to_delete=[{"key": 'image', "replacement": lambda x: URL + x + '/image'}]
 )
 
 
@@ -48,7 +49,7 @@ api = ApiView(
 @app.route('/api/collaborator', methods=['POST'])
 def collaborator(e_id=None):
     if request.method == 'GET':
-        return api.get(entity_id=e_id)
+        return api.get(entity_id=e_id, query=request.args.to_dict())
     elif request.method == 'POST':
         return api.post(package=request.json)
     elif request.method == 'PUT':
@@ -63,6 +64,7 @@ def img_collaborator(e_id=None):
     if collab is not None:
         return jsonify({"data": collab.image}), 200
     return jsonify({'status': 'error', 'description': 'not_found', 'code': 404}), 404
+
 
 @app.route('/api/list/collaborator', methods=['GET'])
 def list_collaborator():
