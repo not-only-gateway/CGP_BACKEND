@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 import requests
 import env
 from api.api import ApiView
@@ -12,7 +12,9 @@ from linkage.models import Linkage
 from marital.models import MaritalStatus
 from collaborator.models import Collaborator
 from unit.models import Unit
-
+from PIL import Image
+from io import BytesIO
+import base64
 
 def load_image(data):
     try:
@@ -61,11 +63,15 @@ def collaborator(e_id=None):
 @app.route('/api/collaborator/<e_id>/image', methods=['GET'])
 def img_collaborator(e_id=None):
     collab = Collaborator.query.get(e_id)
-    if collab is not None:
-        return jsonify({"data": collab.image}), 200
-    return jsonify({'status': 'error', 'description': 'not_found', 'code': 404}), 404
+    if collab is not None and collab.image is not None:
+        split = collab.image.replace("data:image/png;base64,", '')
+        im = base64.b64decode(split.encode('ascii'))
+        response = make_response(im, 200)
+        response.mimetype = 'image/png'
+        return response
+    return 404
 
 
 @app.route('/api/list/collaborator', methods=['GET'])
 def list_collaborator():
-    return api.list(request.args)
+    return api.list(data=request.args, require_call=False)
