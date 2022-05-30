@@ -14,6 +14,10 @@ class Commissioned(db.Model):
     quantity = db.Column('quantidade', db.SmallInteger, nullable=False)
     unitary_value = db.Column('valorunitario', db.Float, nullable=False)
 
+    nomef =  db.Column('nomef', db.String)
+    nomem =  db.Column('nomem', db.String)
+    cargoc =  db.Column('cargoc', db.String)
+
     def update(self, data):
         try:
             for key in data.keys():

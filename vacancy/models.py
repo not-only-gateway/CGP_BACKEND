@@ -13,7 +13,6 @@ class Vacancy(db.Model):
     holder = db.Column('titular', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='SET NULL'))
     substitute = db.Column('substituto', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='SET NULL'))
 
-
     nomef =  db.Column('nomef', db.String, nullable=False)
     nomem =  db.Column('nomem', db.String, nullable=False)
     cargoc =  db.Column('cargoc', db.String, nullable=False)

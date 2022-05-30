@@ -5,16 +5,19 @@ from api.api import ApiView
 from app import app
 from app import authorize
 from app import db
+
 from commissioned.models import Commissioned
 from effective.models import Effective
 from instruction.models import Instruction
 from linkage.models import Linkage
 from marital.models import MaritalStatus
 from collaborator.models import Collaborator
+from vacancy.models import Vacancy
 from unit.models import Unit
 from PIL import Image
 from io import BytesIO
 import base64
+
 
 def load_image(data):
     try:
@@ -26,6 +29,25 @@ def load_image(data):
         return d
     except (ValueError, OSError):
         return data
+
+
+def get_role(data):
+    root = Unit.query.get(data.get('unit', {}).get('root', ''))
+    if root is not None:
+        data['directory'] = root.name
+    effective_role = data.get('effective', None)
+    if effective_role is not None:
+        data['role'] = effective_role.get('name', None)
+    if data.get('commissioned', None) is not None:
+        # collab_id = data['id']
+        # role = Commissioned.query.get(data.get('commissioned', None))
+        relation = Vacancy.query.filter(Vacancy.commissioned == data.get('commissioned', {}).get('id', None)).first()
+
+        if relation is not None:
+            if data.get('gender', '').lower() == 'masculino':
+                data['role'] = relation.nomem
+            else:
+                data['role'] = relation.nomef
 
 
 URL = 'http://192.168.1.188:443/api/collaborator/'
@@ -43,7 +65,8 @@ api = ApiView(
     on_key_parse=[{'key': 'image', 'loader': load_image}],
     db=db,
     on_before_call=authorize,
-    keys_to_delete=[{"key": 'image', "replacement": lambda x: URL + x + '/image'}]
+    keys_to_delete=[{"key": 'image', "replacement": lambda x: URL + x + '/image'}],
+    on_parse=get_role
 )
 
 
