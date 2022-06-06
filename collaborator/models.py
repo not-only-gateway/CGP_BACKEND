@@ -12,7 +12,6 @@ class Collaborator(db.Model):
 
     registration = db.Column('matricula', db.String)
     name = db.Column('nome', db.String, nullable=False)
-    superior = db.Column('superior', db.String)
     birth = db.Column('nascimento', db.DateTime)
     gender = db.Column('genero', db.String, nullable=False)
     nationality = db.Column('nacionalidade', db.String, nullable=False)
@@ -24,6 +23,8 @@ class Collaborator(db.Model):
     email = db.Column('email', db.String)
     degree = db.Column('grauh', db.String)
 
+
+    superior = db.Column('superior', db.String, db.ForeignKey('cgp_colaborador.codigo', ondelete='SET NULL'))
     linkage = db.Column('vinculo', db.String, db.ForeignKey('cgp_vinculo.codigo', ondelete='SET NULL'))
     effective = db.Column('cefetivo', db.String, db.ForeignKey('cgp_cefetivo.codigo', ondelete='SET NULL'))
     commissioned = db.Column('ccomiss', db.String, db.ForeignKey('cgp_ccomiss.codigo', ondelete='SET NULL'))
@@ -36,7 +37,6 @@ class Collaborator(db.Model):
 
     id_solides = db.Column('id_solides', db.String)
     id_ad = db.Column('id_ad', db.String)
-    id_avaya = db.Column('id_avaya', db.String)
 
     def update(self, data):
         try:

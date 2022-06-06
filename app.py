@@ -34,7 +34,8 @@ def authorize(method):
 
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-from relationships.models import Relationship
+
+from notification.models import Notification
 from vacancy.models import Vacancy
 from marital.models import MaritalStatus
 from unit.models import Unit
@@ -44,6 +45,7 @@ from effective.models import Effective
 from commissioned.models import Commissioned
 from collaborator.models import Collaborator
 
+import notification.views
 import vacancy.views
 import marital.views
 import unit.views
@@ -54,6 +56,7 @@ import commissioned.views
 import collaborator.views
 
 db.create_all()
+
 
 
 if __name__ == '__main__':

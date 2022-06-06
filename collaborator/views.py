@@ -14,8 +14,9 @@ from marital.models import MaritalStatus
 from collaborator.models import Collaborator
 from vacancy.models import Vacancy
 from unit.models import Unit
-from PIL import Image
-from io import BytesIO
+from datetime import date, timedelta, datetime
+from sqlalchemy import func, or_
+
 import base64
 
 
@@ -32,17 +33,16 @@ def load_image(data):
 
 
 def get_role(data):
-    root = Unit.query.get(data.get('unit', {}).get('root', ''))
-    if root is not None:
-        data['directory'] = root.name
+    if data.get('unit', None) is not None:
+        root = Unit.query.get(data['unit'].get('root', ''))
+        if root is not None:
+            data['directory'] = root.name
     effective_role = data.get('effective', None)
     if effective_role is not None:
         data['role'] = effective_role.get('name', None)
     if data.get('commissioned', None) is not None:
-        # collab_id = data['id']
-        # role = Commissioned.query.get(data.get('commissioned', None))
-        relation = Vacancy.query.filter(Vacancy.commissioned == data.get('commissioned', {}).get('id', None)).first()
-
+        relation = Vacancy.query.filter(
+            Vacancy.commissioned == data.get('commissioned', {}).get('id', None)).first()
         if relation is not None:
             if data.get('gender', '').lower() == 'masculino':
                 data['role'] = relation.nomem
@@ -98,3 +98,14 @@ def img_collaborator(e_id=None):
 @app.route('/api/list/collaborator', methods=['GET'])
 def list_collaborator():
     return api.list(data=request.args, require_call=False)
+
+
+@app.route('/api/list/birthdays/collaborator', methods=['GET'])
+def list_collaborator_birth():
+
+    data = Collaborator.query.all()
+    response = []
+    for i in data:
+        if i.birth.date().day == datetime.today().day and i.birth.date().month == datetime.today().month:
+            response.append(api.parse_entry(i))
+    return jsonify(response)

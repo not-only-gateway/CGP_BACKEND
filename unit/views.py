@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 
 from api.api import ApiView
 from app import app, authorize
@@ -31,7 +31,14 @@ def unit(e_id=None):
         return api.delete(entity_id=e_id)
 
 
+@app.route('/api/list/all/unit', methods=['GET'])
+def list_unit_all():
+    data = Unit.query.all()
+    response = []
+    for i in data:
+        response.append(api.parse_entry(i))
+    return jsonify(response)
+
 @app.route('/api/list/unit', methods=['GET'])
 def list_unit():
-
     return api.list(request.args)
